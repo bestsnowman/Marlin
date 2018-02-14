@@ -336,8 +336,8 @@ class Stepper {
       }
       if (timer < 100) { // (20kHz - this should never happen)
         timer = 100;
-        MYSERIAL.print(MSG_STEPPER_TOO_HIGH);
-        MYSERIAL.println(step_rate);
+        MYSERIAL0.print(MSG_STEPPER_TOO_HIGH);
+        MYSERIAL0.println(step_rate);
       }
       return timer;
     }
@@ -359,6 +359,9 @@ class Stepper {
       OCR1A_nominal = calc_timer_interval(current_block->nominal_rate);
       // make a note of the number of step loops required at nominal speed
       step_loops_nominal = step_loops;
+      acc_step_rate = current_block->initial_rate;
+      acceleration_time = calc_timer_interval(acc_step_rate);
+      _NEXT_ISR(acceleration_time);
 
       #if ENABLED(LIN_ADVANCE)
         if (current_block->use_advance_lead) {
